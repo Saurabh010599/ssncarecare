@@ -1,0 +1,6 @@
+{
+  "name": "SN CAR CARE | Detailing Studio",
+  "description": "Chandrapur's premier automotive detailing studio specializing in ceramic coating, foam wash, paint protection, and interior deep cleaning.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
