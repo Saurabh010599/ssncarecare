@@ -1,6 +1,6 @@
 {
-  "name": "SN CAR CARE | Detailing Studio",
-  "description": "Chandrapur's premier automotive detailing studio specializing in ceramic coating, foam wash, paint protection, and interior deep cleaning.",
+  "name": "Best Car Deal | Certified Pre-Owned Cars",
+  "description": "Buy, sell, and finance certified pre-owned luxury and everyday second hand cars with 210-point inspection, 1-year warranty, doorstep test drive booking, and real-time EMI calculation.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

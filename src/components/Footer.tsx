@@ -1,180 +1,244 @@
 import React from 'react';
-import { Phone, MapPin, Clock, Star, Shield, MessageSquare, ArrowUp, ChevronRight, ExternalLink } from 'lucide-react';
-import { BUSINESS_INFO, SERVICES } from '../data/mockData';
+import { 
+  Sparkles, 
+  ShieldCheck, 
+  Phone, 
+  Mail, 
+  MapPin, 
+  Clock, 
+  MessageSquare, 
+  ArrowRight, 
+  Heart, 
+  Award,
+  Instagram,
+  Youtube,
+  Facebook,
+  Twitter,
+  Car
+} from 'lucide-react';
+import { BUSINESS_CONFIG, DEALERSHIP_HUBS } from '../data/mockData';
 
-export const Footer: React.FC = () => {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+interface FooterProps {
+  onOpenTestDrive: () => void;
+  onOpenSellCar: () => void;
+  onFilterMake: (make: string) => void;
+}
 
+export const Footer: React.FC<FooterProps> = ({
+  onOpenTestDrive,
+  onOpenSellCar,
+  onFilterMake,
+}) => {
   return (
-    <footer className="relative bg-[#070709] text-neutral-400 text-xs border-t border-[#202026]">
-      {/* Top Footer Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
+    <footer className="bg-[#07070B] text-neutral-400 text-xs border-t border-white/10 relative">
+      
+      {/* Top CTA Banner */}
+      <div className="border-b border-white/10 bg-gradient-to-r from-[#12131C] via-[#1B1D2C] to-[#12131C] py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+          <div className="space-y-1">
+            <div className="inline-flex items-center space-x-2 text-xs font-bold uppercase tracking-widest text-amber-400">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Ready for your dream car?</span>
+            </div>
+            <h3 className="text-xl sm:text-3xl font-extrabold text-white font-heading">
+              Test Drive Any Certified Car At Your Doorstep
+            </h3>
+            <p className="text-xs text-neutral-400">
+              100% Free • No Obligation • 210-Point Technical Report Included
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <button
+              onClick={onOpenTestDrive}
+              className="py-3 px-6 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/25 transition-all cursor-pointer"
+            >
+              Book Test Drive Now
+            </button>
+            <a
+              href="#sell-car"
+              className="py-3 px-6 rounded-xl bg-[#1F2130] hover:bg-[#2A2D42] border border-white/15 text-white font-bold text-xs uppercase tracking-wider transition-colors"
+            >
+              Sell Your Car
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Footer Links */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           
-          {/* Col 1: Brand & Tagline (4 cols) */}
-          <div className="lg:col-span-4 space-y-5">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1C1C22] to-[#0E0E12] border border-[#5A8FCB]/40 flex items-center justify-center shadow-lg">
-                <span className="font-brand font-bold text-lg text-white">SN</span>
+          {/* Brand Info (2 cols) */}
+          <div className="lg:col-span-2 space-y-4">
+            <div className="flex items-center space-x-2">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/30">
+                <Car className="w-5 h-5 text-black" />
               </div>
-              <div>
-                <span className="font-brand text-base font-extrabold tracking-wider text-white block">
-                  SN CAR CARE
+              <div className="flex flex-col">
+                <span className="font-heading font-black text-lg tracking-wider text-white">
+                  BEST CAR <span className="text-amber-400">DEAL</span>
                 </span>
-                <span className="text-[10px] tracking-widest text-[#5A8FCB] uppercase font-bold">
-                  Detailing Studio
+                <span className="text-[9px] uppercase tracking-widest text-neutral-400 -mt-1 font-semibold">
+                  Certified Pre-Owned Luxury
                 </span>
               </div>
             </div>
 
-            <p className="text-neutral-300 text-sm font-semibold tracking-wide text-white">
-              "{BUSINESS_INFO.tagline}"
+            <p className="text-xs text-neutral-400 leading-relaxed max-w-sm">
+              India's premier certified pre-owned automotive brand. Every vehicle undergoes a 210-point clinical diagnosis and comes with a 1-Year Pan-India Warranty and 7-Day Money Back Guarantee.
             </p>
 
-            <p className="text-neutral-400 leading-relaxed text-xs">
-              Chandrapur’s destination for high-precision automotive detailing, 9H/10H nano-ceramic coatings, active foam wash, and deep steam extraction.
-            </p>
-
-            {/* Google Rating Badge */}
-            <div className="p-3.5 rounded-xl bg-[#121216] border border-[#252530] flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center font-bold text-[#4285F4] text-base">
-                  G
-                </div>
-                <div>
-                  <div className="flex items-center space-x-1 text-amber-400">
-                    <span className="font-extrabold text-white text-sm">4.5★</span>
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
-                      ))}
-                    </div>
-                  </div>
-                  <div className="text-[10px] text-neutral-400">47 Verified Google Reviews</div>
-                </div>
-              </div>
-              <a
-                href={BUSINESS_INFO.location.mapUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[10px] font-bold text-[#5A8FCB] hover:text-white"
-              >
-                View &rarr;
+            {/* Social Icons */}
+            <div className="flex items-center space-x-3 pt-2">
+              <a href="#" className="w-8 h-8 rounded-lg bg-[#141520] border border-white/10 flex items-center justify-center text-neutral-300 hover:text-amber-400 hover:border-amber-400 transition-colors">
+                <Instagram className="w-4 h-4" />
+              </a>
+              <a href="#" className="w-8 h-8 rounded-lg bg-[#141520] border border-white/10 flex items-center justify-center text-neutral-300 hover:text-amber-400 hover:border-amber-400 transition-colors">
+                <Youtube className="w-4 h-4" />
+              </a>
+              <a href="#" className="w-8 h-8 rounded-lg bg-[#141520] border border-white/10 flex items-center justify-center text-neutral-300 hover:text-amber-400 hover:border-amber-400 transition-colors">
+                <Facebook className="w-4 h-4" />
+              </a>
+              <a href="#" className="w-8 h-8 rounded-lg bg-[#141520] border border-white/10 flex items-center justify-center text-neutral-300 hover:text-amber-400 hover:border-amber-400 transition-colors">
+                <Twitter className="w-4 h-4" />
               </a>
             </div>
           </div>
 
-          {/* Col 2: Services Directory (3 cols) */}
-          <div className="lg:col-span-3 space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-white">
-              Detailing Services
+          {/* Popular Brands */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold text-white uppercase tracking-widest font-heading">
+              Shop by Make
             </h4>
-            <ul className="space-y-2">
-              {SERVICES.map((s) => (
-                <li key={s.id}>
-                  <a
-                    href="#services"
-                    className="hover:text-white transition-colors flex items-center space-x-1.5 text-neutral-300"
+            <ul className="space-y-2 text-xs">
+              {['BMW', 'Mercedes-Benz', 'Mahindra', 'Hyundai', 'Tata', 'Toyota', 'Audi'].map((make) => (
+                <li key={make}>
+                  <button
+                    onClick={() => {
+                      onFilterMake(make);
+                      const el = document.getElementById('inventory');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="hover:text-amber-400 transition-colors cursor-pointer text-left"
                   >
-                    <ChevronRight className="w-3 h-3 text-[#5A8FCB]" />
-                    <span>{s.title}</span>
-                  </a>
+                    Used {make} Cars
+                  </button>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Col 3: Quick Links & Local Areas (2 cols) */}
-          <div className="lg:col-span-2 space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-white">
-              Studio Links
+          {/* Experience Hubs */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold text-white uppercase tracking-widest font-heading">
+              Experience Centers
             </h4>
-            <ul className="space-y-2">
-              <li><a href="#hero" className="hover:text-white transition-colors">Home</a></li>
-              <li><a href="#services" className="hover:text-white transition-colors">Services Showcase</a></li>
-              <li><a href="#why-us" className="hover:text-white transition-colors">Why Choose Us</a></li>
-              <li><a href="#transformations" className="hover:text-white transition-colors">Before &amp; After</a></li>
-              <li><a href="#about" className="hover:text-white transition-colors">About Studio</a></li>
-              <li><a href="#reviews" className="hover:text-white transition-colors">Google Reviews</a></li>
-              <li><a href="#location" className="hover:text-white transition-colors">Studio Location</a></li>
+            <ul className="space-y-2 text-xs">
+              {DEALERSHIP_HUBS.map((hub) => (
+                <li key={hub.id}>
+                  <a href="#hubs" className="hover:text-amber-400 transition-colors">
+                    {hub.city} Flagship Studio ({hub.carsInStock} in stock)
+                  </a>
+                </li>
+              ))}
+              <li>
+                <span className="text-emerald-400 font-medium">Doorstep Delivery (Pan-India)</span>
+              </li>
             </ul>
-
-            <div className="pt-2">
-              <h5 className="text-[11px] font-bold text-neutral-300 mb-1.5 uppercase">Areas Served:</h5>
-              <p className="text-[11px] text-neutral-500 leading-tight">
-                Datala Road &bull; Jagannath Baba Nagar &bull; Chandrapur City &bull; Babupeth &bull; Tukum &bull; Ramnagar &bull; Ballarpur Rd.
-              </p>
-            </div>
           </div>
 
-          {/* Col 4: Contact & Studio Info (3 cols) */}
-          <div className="lg:col-span-3 space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-white">
-              Studio Details
+          {/* Contact & Support */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold text-white uppercase tracking-widest font-heading">
+              Concierge Desk
             </h4>
-            
-            <div className="space-y-3">
-              <div className="flex items-start space-x-2.5">
-                <MapPin className="w-4 h-4 text-[#5A8FCB] shrink-0 mt-0.5" />
-                <span className="text-neutral-300 leading-relaxed text-xs">
-                  {BUSINESS_INFO.location.address}, {BUSINESS_INFO.location.city}, Maharashtra {BUSINESS_INFO.location.pincode}
-                </span>
-              </div>
-
-              <div className="flex items-center space-x-2.5">
-                <Phone className="w-4 h-4 text-[#5A8FCB] shrink-0" />
-                <a href={`tel:${BUSINESS_INFO.phoneRaw}`} className="text-white hover:text-[#5A8FCB] font-bold text-sm">
-                  {BUSINESS_INFO.phone}
+            <ul className="space-y-2.5 text-xs">
+              <li className="flex items-center space-x-2">
+                <Phone className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <a href={`tel:${BUSINESS_CONFIG.phoneRaw}`} className="text-white font-bold hover:underline font-mono-num">
+                  {BUSINESS_CONFIG.phone}
                 </a>
-              </div>
-
-              <div className="flex items-center space-x-2.5">
-                <Clock className="w-4 h-4 text-[#5A8FCB] shrink-0" />
-                <span className="text-neutral-300 text-xs">
-                  {BUSINESS_INFO.timings}
-                </span>
-              </div>
-
-              {/* Direct Quick WhatsApp link */}
-              <div className="pt-2">
+              </li>
+              <li className="flex items-center space-x-2">
+                <MessageSquare className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 <a
-                  href={`https://wa.me/${BUSINESS_INFO.phoneRaw}?text=${BUSINESS_INFO.whatsappPrefill()}`}
+                  href={`https://wa.me/${BUSINESS_CONFIG.phoneRaw}?text=Hi%20Best%20Car%20Deal`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-2.5 px-3 rounded-xl bg-[#25D366]/15 hover:bg-[#25D366]/25 text-[#25D366] border border-[#25D366]/30 font-bold flex items-center justify-center space-x-2 transition-all text-xs"
+                  className="hover:text-emerald-400 transition-colors"
                 >
-                  <MessageSquare className="w-4 h-4 fill-current" />
-                  <span>Direct WhatsApp Chat</span>
+                  24/7 WhatsApp VIP Desk
                 </a>
-              </div>
-            </div>
+              </li>
+              <li className="flex items-center space-x-2">
+                <Mail className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span>{BUSINESS_CONFIG.email}</span>
+              </li>
+              <li className="flex items-start space-x-2">
+                <Clock className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                <span>Open 7 Days (9:00 AM – 9:00 PM)</span>
+              </li>
+            </ul>
           </div>
 
         </div>
-      </div>
 
-      {/* Bottom Copyright & Legal Strip */}
-      <div className="border-t border-[#181820] bg-[#050507] py-6 px-4">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-neutral-500 text-[11px]">
+        {/* Bottom Legal Copyright Strip */}
+        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-neutral-500">
           <div>
-            &copy; {new Date().getFullYear()} <strong className="text-neutral-300">SN CAR CARE Detailing Studio</strong>. All rights reserved. | Chandrapur, Maharashtra.
+            &copy; {new Date().getFullYear()} {BUSINESS_CONFIG.brandName} Certified Pre-Owned Automotive India Pvt. Ltd. All rights reserved.
           </div>
-
-          <div className="flex items-center space-x-6">
-            <span>Keep Your Car Feel New</span>
+          <div className="flex flex-wrap items-center space-x-4">
+            <a href="#inspection" className="hover:text-white transition-colors">210-Point Guarantee</a>
             <span>&bull;</span>
-            <button
-              onClick={scrollToTop}
-              className="flex items-center space-x-1 text-neutral-400 hover:text-white transition-colors"
-            >
-              <span>Back to Top</span>
-              <ArrowUp className="w-3 h-3" />
-            </button>
+            <a href="#faq" className="hover:text-white transition-colors">1-Yr Warranty Policy</a>
+            <span>&bull;</span>
+            <a href="#faq" className="hover:text-white transition-colors">7-Day Money Back Terms</a>
+            <span>&bull;</span>
+            <a href="#calculator" className="hover:text-white transition-colors">Loan Disclaimers</a>
           </div>
         </div>
+
       </div>
+
+      {/* Floating Mobile Bottom Conversion Dock */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0C0D14]/95 backdrop-blur-xl border-t border-amber-500/30 p-2.5 grid grid-cols-4 gap-2 text-center text-[10px] font-bold">
+        <a
+          href={`tel:${BUSINESS_CONFIG.phoneRaw}`}
+          className="p-2 rounded-xl bg-[#141520] border border-white/10 text-white flex flex-col items-center justify-center space-y-0.5"
+        >
+          <Phone className="w-4 h-4 text-amber-400" />
+          <span>Call</span>
+        </a>
+
+        <a
+          href={`https://wa.me/${BUSINESS_CONFIG.phoneRaw}?text=Hi%20Best%20Car%20Deal,%20I%20want%20to%20inquire%20about%20a%20certified%20car.`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="p-2 rounded-xl bg-[#25D366]/15 border border-[#25D366]/30 text-[#25D366] flex flex-col items-center justify-center space-y-0.5"
+        >
+          <MessageSquare className="w-4 h-4 fill-current" />
+          <span>WhatsApp</span>
+        </a>
+
+        <button
+          onClick={onOpenTestDrive}
+          className="p-2 rounded-xl bg-amber-500 text-black flex flex-col items-center justify-center space-y-0.5 font-extrabold"
+        >
+          <Sparkles className="w-4 h-4 fill-black" />
+          <span>Test Drive</span>
+        </button>
+
+        <a
+          href="#sell-car"
+          className="p-2 rounded-xl bg-[#1F202E] border border-white/10 text-neutral-200 flex flex-col items-center justify-center space-y-0.5"
+        >
+          <Car className="w-4 h-4 text-amber-400" />
+          <span>Sell Car</span>
+        </a>
+      </div>
+
     </footer>
   );
 };

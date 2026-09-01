@@ -1,237 +1,311 @@
-import React from 'react';
-import { Phone, MessageSquare, Navigation, Star, ShieldCheck, Sparkles, CheckCircle2, ChevronDown, Award, Zap } from 'lucide-react';
-import { BUSINESS_INFO } from '../data/mockData';
+import React, { useState } from 'react';
+import { 
+  Search, 
+  Sparkles, 
+  ShieldCheck, 
+  CheckCircle2, 
+  ArrowRight, 
+  Zap, 
+  Flame, 
+  Calendar, 
+  Gauge, 
+  Fuel, 
+  Layers, 
+  Phone,
+  MessageSquare,
+  Award
+} from 'lucide-react';
+import { FilterState, CarItem } from '../types';
+import { BUSINESS_CONFIG, CARS_INVENTORY } from '../data/mockData';
 
 interface HeroProps {
-  onOpenBooking: (serviceId?: string) => void;
+  onSearchApply: (filters: Partial<FilterState>) => void;
+  onOpenTestDrive: (carId?: string, carName?: string) => void;
+  onSelectCar: (car: CarItem) => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
+export const Hero: React.FC<HeroProps> = ({
+  onSearchApply,
+  onOpenTestDrive,
+  onSelectCar,
+}) => {
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [selectedBudget, setSelectedBudget] = useState<number>(0);
+  const [selectedBodyType, setSelectedBodyType] = useState<string>('All');
+  const [selectedMake, setSelectedMake] = useState<string>('All');
+
+  const spotlightCar = CARS_INVENTORY[0]; // BMW X1 or featured car
+
+  const handleHeroSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSearchApply({
+      searchQuery: searchKeyword,
+      budgetMax: selectedBudget,
+      bodyType: selectedBodyType === 'All' ? '' : selectedBodyType,
+      make: selectedMake === 'All' ? '' : selectedMake,
+    });
+    const el = document.getElementById('inventory');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const budgetOptions = [
+    { label: 'All Budgets', value: 0 },
+    { label: 'Under ₹15L', value: 1500000 },
+    { label: '₹15L – ₹25L', value: 2500000 },
+    { label: '₹25L – ₹40L', value: 4000000 },
+    { label: 'Luxury ₹40L+', value: 6000000 },
+  ];
+
+  const bodyTypes = ['All', 'SUV', 'Luxury', 'Sedan', 'Compact SUV', 'EV'];
+
   return (
-    <section
-      id="hero"
-      className="relative min-h-[92vh] lg:min-h-screen flex items-center justify-center overflow-hidden bg-[#0B0B0D] pt-6 pb-16 lg:py-0"
-    >
-      {/* Cinematic Background Layer with Luxury Lighting */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src="https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=2000&q=85"
-          alt="Luxury car detailing studio background"
-          className="w-full h-full object-cover object-center opacity-25 filter brightness-75 scale-105 transform transition-transform duration-1000 ease-out"
-        />
-        {/* Dark Overlays & Gradient Vignette */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0B0B0D] via-[#0B0B0D]/90 to-[#0B0B0D]/70" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0B0B0D] via-transparent to-[#0B0B0D]/80" />
+    <div id="hero" className="relative min-h-[90vh] lg:min-h-[92vh] flex items-center justify-center overflow-hidden pt-6 pb-16 bg-[#090A0F]">
+      
+      {/* Background Ambience & Lighting */}
+      <div className="absolute inset-0 radial-gold-glow pointer-events-none opacity-80" />
+      <div className="absolute top-1/4 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 left-0 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute inset-0 luxury-grid opacity-60 pointer-events-none" />
 
-        {/* Ambient Studio Rim Lights */}
-        <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-[#5A8FCB]/15 blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-1/3 right-0 w-[450px] h-[450px] rounded-full bg-[#D42E2E]/10 blur-[140px] pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full carbon-pattern opacity-40 pointer-events-none" />
-      </div>
-
-      {/* Main Content Container */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-10 lg:py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        
+        {/* Main Grid: Headline + Search Form & Spotlight Car */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
           
-          {/* Left Column: Storytelling & Conversion CTAs */}
+          {/* Left Column: Brand Headline, Trust Pillars, & Dynamic Search (7 cols) */}
           <div className="lg:col-span-7 space-y-6 text-left">
             
-            {/* Small Label / Studio Tag */}
-            <div className="inline-flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full bg-[#18181D]/90 border border-[#5A8FCB]/30 shadow-inner">
-              <span className="w-2 h-2 rounded-full bg-[#5A8FCB] animate-ping" />
-              <span className="text-[11px] font-bold tracking-[0.2em] text-[#A5C9EB] uppercase">
-                CHANDRAPUR'S PREMIUM DETAILING STUDIO
-              </span>
+            {/* Trust Pill */}
+            <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500/15 via-[#1F202D] to-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold shadow-lg shadow-amber-500/10">
+              <Sparkles className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+              <span>India’s Most Trusted Certified Pre-Owned Dealership</span>
             </div>
 
-            {/* Main Headline */}
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.12]">
-              Premium Car Wash &amp; <br />
-              <span className="electric-blue-gradient-text">Auto Detailing Services</span> <br />
-              <span className="text-neutral-200">in Chandrapur</span>
-            </h1>
+            {/* Headline */}
+            <div className="space-y-2">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.08] tracking-tight font-heading">
+                Find The <span className="gold-gradient-text">Best Deal</span> On 100% Certified Cars.
+              </h1>
+              <p className="text-sm sm:text-base text-neutral-300 max-w-2xl leading-relaxed font-normal">
+                Skip the dealership markups and uncertain history. Every second-hand car at <strong className="text-white">Best Car Deal</strong> is backed by a <span className="text-amber-400 font-semibold">210-Point Technical Check</span>, 1-Year Pan-India Warranty, and 7-Day No-Questions-Asked Money Back Guarantee.
+              </p>
+            </div>
 
-            {/* Subheadline */}
-            <p className="text-neutral-300 text-base sm:text-lg leading-relaxed max-w-2xl font-normal">
-              Professional car washing, detailing, polishing, ceramic coating, interior cleaning, and vehicle grooming services designed to keep your vehicle looking showroom fresh.
-            </p>
-
-            {/* Trust Row */}
-            <div className="pt-2 pb-1 flex flex-wrap items-center gap-4 sm:gap-6 text-xs sm:text-sm text-neutral-300 border-y border-white/10 py-3">
-              <div className="flex items-center space-x-1.5">
-                <div className="flex text-amber-400">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
-                <span className="font-bold text-white">4.5 Rating</span>
+            {/* 4 Trust Micro-Pillars */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+              <div className="p-2.5 rounded-xl bg-[#141520] border border-white/10 flex items-center space-x-2">
+                <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span className="text-[11px] font-bold text-neutral-200">210+ Inspection Points</span>
               </div>
-
-              <div className="h-4 w-px bg-neutral-700 hidden sm:block" />
-
-              <div className="flex items-center space-x-1.5 text-neutral-200">
-                <Award className="w-4 h-4 text-[#5A8FCB]" />
-                <span className="font-semibold text-white">47+ Reviews</span>
-                <span className="text-neutral-400">on Google</span>
+              <div className="p-2.5 rounded-xl bg-[#141520] border border-white/10 flex items-center space-x-2">
+                <Award className="w-4 h-4 text-amber-400 shrink-0" />
+                <span className="text-[11px] font-bold text-neutral-200">1-Year Warranty</span>
               </div>
-
-              <div className="h-4 w-px bg-neutral-700 hidden sm:block" />
-
-              <div className="flex items-center space-x-1.5 text-neutral-200">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span className="font-medium">Premium Products Used</span>
+              <div className="p-2.5 rounded-xl bg-[#141520] border border-white/10 flex items-center space-x-2">
+                <Zap className="w-4 h-4 text-sky-400 shrink-0" />
+                <span className="text-[11px] font-bold text-neutral-200">7-Day Money Back</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-[#141520] border border-white/10 flex items-center space-x-2">
+                <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                <span className="text-[11px] font-bold text-neutral-200">0% Down Payment</span>
               </div>
             </div>
 
-            {/* Primary CTA Buttons Row */}
-            <div className="pt-3 flex flex-wrap items-center gap-3 sm:gap-4">
-              {/* Call Now */}
-              <a
-                id="hero-call-now"
-                href={`tel:${BUSINESS_INFO.phoneRaw}`}
-                className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#D42E2E] to-[#B31D1D] hover:from-[#E33B3B] hover:to-[#C22424] text-white font-bold text-sm tracking-wide uppercase shadow-lg shadow-[#D42E2E]/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center space-x-2 group"
-              >
-                <Phone className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-                <span>Call Now</span>
-              </a>
-
-              {/* WhatsApp Us */}
-              <a
-                id="hero-whatsapp-us"
-                href={`https://wa.me/${BUSINESS_INFO.phoneRaw}?text=${BUSINESS_INFO.whatsappPrefill()}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-6 py-3.5 rounded-xl bg-[#25D366] hover:bg-[#20BE5C] text-white font-bold text-sm tracking-wide uppercase shadow-lg shadow-[#25D366]/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center space-x-2"
-              >
-                <MessageSquare className="w-4 h-4 fill-current" />
-                <span>WhatsApp Us</span>
-              </a>
-
-              {/* Get Directions */}
-              <a
-                id="hero-get-directions"
-                href={BUSINESS_INFO.location.mapUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-5 py-3.5 rounded-xl bg-[#16161B] hover:bg-[#202027] text-neutral-200 hover:text-white border border-[#2D2D35] hover:border-[#5A8FCB]/50 font-semibold text-sm transition-all flex items-center space-x-2"
-              >
-                <Navigation className="w-4 h-4 text-[#5A8FCB]" />
-                <span>Get Directions</span>
-              </a>
-
-              {/* Estimate Tool button */}
-              <button
-                id="hero-instant-quote"
-                onClick={() => onOpenBooking()}
-                className="px-4 py-3.5 rounded-xl bg-[#1D222A] hover:bg-[#252C37] text-[#5A8FCB] border border-[#5A8FCB]/30 hover:border-[#5A8FCB] font-semibold text-xs transition-all flex items-center space-x-1.5"
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Calculate Pricing</span>
-              </button>
-            </div>
-
-            {/* Studio Address Quick Pin */}
-            <div className="text-xs text-neutral-400 flex items-center space-x-2 pt-1">
-              <span className="text-[#5A8FCB]">📍 Studio Location:</span>
-              <span className="text-neutral-300 font-medium">Datala Road, Opp. Jagannath Baba, Chandrapur (MH 442401)</span>
-            </div>
-
-          </div>
-
-          {/* Right Column: Luxury Sports Car Showcase & 4 Floating Glass Cards */}
-          <div className="lg:col-span-5 relative mt-4 lg:mt-0 flex justify-center items-center">
-            
-            {/* Visual Glass Stage Frame */}
-            <div className="relative w-full max-w-lg rounded-2xl overflow-visible p-1">
+            {/* Dynamic Quick Search Engine Box */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-[#12131C]/90 backdrop-blur-xl border border-white/15 shadow-2xl space-y-4">
               
-              {/* Backing Ambient Halo */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-[#5A8FCB]/20 via-transparent to-[#D42E2E]/20 rounded-2xl filter blur-xl transform scale-95" />
-
-              {/* Main Visual Image Card */}
-              <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-[#121215] aspect-[4/3] sm:aspect-[16/11] group">
-                <img
-                  src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=1200&q=85"
-                  alt="High gloss sports car ceramic coating result"
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out filter brightness-95 contrast-105"
-                />
-                
-                {/* Surface Polish Light Sweep Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0B0B0D] via-transparent to-transparent opacity-80" />
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                {/* Badge on the car image */}
-                <div className="absolute top-3 left-3 bg-[#0B0B0D]/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 flex items-center space-x-1.5 text-xs text-neutral-300 font-medium">
-                  <Zap className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Showroom Mirror Finish</span>
-                </div>
-
-                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-[11px] text-neutral-400 bg-[#0B0B0D]/75 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/5">
-                  <span className="text-white font-medium">SN CAR CARE Studio Bay</span>
-                  <span className="text-emerald-400 font-semibold">● Live Inspection Ready</span>
-                </div>
+              {/* Body Type Filter Tabs */}
+              <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
+                {bodyTypes.map((type) => (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => setSelectedBodyType(type)}
+                    className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all cursor-pointer ${
+                      selectedBodyType === type
+                        ? 'bg-amber-500 text-black shadow-md shadow-amber-500/20'
+                        : 'bg-[#1A1C28] text-neutral-400 hover:text-white hover:bg-[#252838]'
+                    }`}
+                  >
+                    {type}
+                  </button>
+                ))}
               </div>
 
-              {/* Floating Glass Card 1: 47+ Happy Customers (Top-Right) */}
-              <div className="absolute -top-4 -right-3 sm:-right-6 glass-panel rounded-xl px-4 py-2.5 shadow-xl border border-white/15 flex items-center space-x-3 transform hover:scale-105 transition-transform animate-in fade-in duration-500">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-sm">
-                  ✓
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-white tracking-wide">47+ Happy Customers</div>
-                  <div className="text-[10px] text-neutral-400">Verified Google Reviews</div>
-                </div>
-              </div>
+              {/* Main Search Controls */}
+              <form onSubmit={handleHeroSearch} className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+                  
+                  {/* Search Input */}
+                  <div className="sm:col-span-5 relative">
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+                    <input
+                      type="text"
+                      placeholder="Search car (e.g. BMW, Thar, Creta, Sunroof)..."
+                      value={searchKeyword}
+                      onChange={(e) => setSearchKeyword(e.target.value)}
+                      className="w-full pl-10 pr-3 py-3 rounded-xl bg-[#090A10] border border-white/10 text-xs text-white placeholder:text-neutral-500 focus:border-amber-400 focus:outline-none transition-colors"
+                    />
+                  </div>
 
-              {/* Floating Glass Card 2: Premium Detailing (Top-Left) */}
-              <div className="absolute -top-6 -left-3 sm:-left-6 glass-panel rounded-xl px-4 py-2.5 shadow-xl border border-[#5A8FCB]/30 flex items-center space-x-3 transform hover:scale-105 transition-transform">
-                <div className="w-8 h-8 rounded-lg bg-[#5A8FCB]/20 border border-[#5A8FCB]/40 flex items-center justify-center text-[#5A8FCB]">
-                  <CheckCircle2 className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-white tracking-wide">Premium Detailing</div>
-                  <div className="text-[10px] text-neutral-400">German Rotary Buffing</div>
-                </div>
-              </div>
+                  {/* Budget Dropdown */}
+                  <div className="sm:col-span-4">
+                    <select
+                      value={selectedBudget}
+                      onChange={(e) => setSelectedBudget(Number(e.target.value))}
+                      className="w-full p-3 rounded-xl bg-[#090A10] border border-white/10 text-xs text-white focus:border-amber-400 focus:outline-none"
+                    >
+                      {budgetOptions.map((b) => (
+                        <option key={b.label} value={b.value} className="bg-[#12131C] text-white">
+                          {b.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-              {/* Floating Glass Card 3: Ceramic Protection (Bottom-Right) */}
-              <div className="absolute -bottom-5 -right-3 sm:-right-4 glass-panel rounded-xl px-4 py-2.5 shadow-xl border border-amber-500/30 flex items-center space-x-3 transform hover:scale-105 transition-transform">
-                <div className="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
-                  <Sparkles className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-white tracking-wide">Ceramic Protection</div>
-                  <div className="text-[10px] text-amber-300/80">9H/10H Hydrophobic Shield</div>
-                </div>
-              </div>
+                  {/* Search Submit CTA */}
+                  <div className="sm:col-span-3">
+                    <button
+                      type="submit"
+                      className="w-full h-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-xs uppercase tracking-wider flex items-center justify-center space-x-1.5 shadow-lg shadow-amber-500/30 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                    >
+                      <span>Find Cars</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
 
-              {/* Floating Glass Card 4: Interior Deep Cleaning (Bottom-Left) */}
-              <div className="absolute -bottom-6 -left-3 sm:-left-4 glass-panel rounded-xl px-4 py-2.5 shadow-xl border border-white/15 flex items-center space-x-3 transform hover:scale-105 transition-transform">
-                <div className="w-8 h-8 rounded-lg bg-[#D42E2E]/20 border border-[#D42E2E]/40 flex items-center justify-center text-[#FF6B6B]">
-                  <CheckCircle2 className="w-4 h-4" />
                 </div>
-                <div>
-                  <div className="text-xs font-bold text-white tracking-wide">Interior Deep Cleaning</div>
-                  <div className="text-[10px] text-neutral-400">140°C Steam Sanitization</div>
+
+                {/* Quick Shortcuts */}
+                <div className="flex flex-wrap items-center gap-2 text-[11px] text-neutral-400 pt-1">
+                  <span className="text-neutral-500">Popular Searches:</span>
+                  {['Under ₹15 Lakh', 'Automatic Diesel SUV', 'Electric Cars', 'BMW Luxury', 'Panoramic Sunroof'].map(
+                    (tag) => (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => {
+                          if (tag.includes('Under ₹15')) setSelectedBudget(1500000);
+                          else if (tag.includes('Automatic')) setSearchKeyword('Automatic');
+                          else if (tag.includes('Electric')) setSelectedBodyType('EV');
+                          else if (tag.includes('BMW')) setSearchKeyword('BMW');
+                          else if (tag.includes('Sunroof')) setSearchKeyword('Sunroof');
+                        }}
+                        className="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-white/10 hover:text-amber-300 text-neutral-300 transition-colors cursor-pointer"
+                      >
+                        {tag}
+                      </button>
+                    )
+                  )}
                 </div>
-              </div>
+              </form>
 
             </div>
 
           </div>
 
-        </div>
+          {/* Right Column: Featured Spotlight Car Card (5 cols) */}
+          <div className="lg:col-span-5 relative">
+            <div className="relative rounded-3xl bg-[#141520] border border-amber-500/30 p-5 shadow-2xl shadow-black/80 space-y-4 group">
+              
+              {/* Badge strip */}
+              <div className="flex items-center justify-between">
+                <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 font-bold text-[11px] border border-amber-500/40 flex items-center space-x-1">
+                  <Flame className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                  <span>Spotlight Deal of the Day</span>
+                </span>
+                <span className="text-xs font-bold text-emerald-400 flex items-center space-x-1">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>208/210 Passed</span>
+                </span>
+              </div>
 
-        {/* Scroll Indicator */}
-        <div className="pt-12 lg:pt-8 flex flex-col items-center justify-center text-neutral-500 hover:text-neutral-300 transition-colors">
-          <a href="#stats" className="flex flex-col items-center space-y-1 group">
-            <span className="text-[10px] tracking-[0.25em] uppercase font-semibold text-neutral-400 group-hover:text-white transition-colors">
-              Explore Detailing Excellence
-            </span>
-            <ChevronDown className="w-4 h-4 animate-bounce text-[#5A8FCB]" />
-          </a>
+              {/* Spotlight Image with Zoom Effect */}
+              <div 
+                className="relative h-56 sm:h-64 rounded-2xl overflow-hidden cursor-pointer"
+                onClick={() => onSelectCar(spotlightCar)}
+              >
+                <img
+                  src={spotlightCar.images[0]}
+                  alt={spotlightCar.model}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                
+                {/* Floating Image Badges */}
+                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+                  <span className="px-2.5 py-1 rounded-lg bg-black/70 backdrop-blur-md font-semibold">
+                    {spotlightCar.location}
+                  </span>
+                  <span className="px-2.5 py-1 rounded-lg bg-amber-500/80 backdrop-blur-md text-black font-extrabold">
+                    Save ₹{(spotlightCar.originalNewPrice - spotlightCar.price).toLocaleString('en-IN')}
+                  </span>
+                </div>
+              </div>
+
+              {/* Title & Price */}
+              <div className="space-y-1">
+                <div className="flex items-baseline justify-between">
+                  <h3 className="text-xl font-bold text-white group-hover:text-amber-400 transition-colors">
+                    {spotlightCar.make} {spotlightCar.model}
+                  </h3>
+                  <div className="text-right">
+                    <span className="text-xs text-neutral-400 line-through mr-1.5">
+                      ₹{spotlightCar.originalNewPrice.toLocaleString('en-IN')}
+                    </span>
+                    <span className="text-xl font-black text-amber-400 font-heading">
+                      ₹{spotlightCar.price.toLocaleString('en-IN')}
+                    </span>
+                  </div>
+                </div>
+                <p className="text-xs text-neutral-400 line-clamp-1">
+                  {spotlightCar.variant} &bull; {spotlightCar.ownership}
+                </p>
+              </div>
+
+              {/* Quick Specs Grid */}
+              <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                <div className="p-2 rounded-xl bg-[#090A10] border border-white/5">
+                  <div className="text-[10px] text-neutral-500">Year &amp; KM</div>
+                  <div className="font-bold text-neutral-200 font-mono-num">{spotlightCar.year} &bull; {spotlightCar.kms.toLocaleString()} km</div>
+                </div>
+                <div className="p-2 rounded-xl bg-[#090A10] border border-white/5">
+                  <div className="text-[10px] text-neutral-500">Fuel &amp; Trans</div>
+                  <div className="font-bold text-neutral-200">{spotlightCar.fuel} &bull; {spotlightCar.transmission}</div>
+                </div>
+                <div className="p-2 rounded-xl bg-[#090A10] border border-white/5">
+                  <div className="text-[10px] text-neutral-500">Starting EMI</div>
+                  <div className="font-bold text-amber-400 font-mono-num">₹{spotlightCar.emiStarting.toLocaleString()}/mo</div>
+                </div>
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => onSelectCar(spotlightCar)}
+                  className="py-2.5 px-3 rounded-xl bg-[#1C1E2A] hover:bg-[#252838] border border-white/10 text-xs font-bold text-white transition-colors cursor-pointer"
+                >
+                  View 210-Pt Report
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onOpenTestDrive(spotlightCar.id, `${spotlightCar.make} ${spotlightCar.model}`)}
+                  className="py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-xs uppercase tracking-wider shadow-md shadow-amber-500/20 transition-all cursor-pointer flex items-center justify-center space-x-1"
+                >
+                  <Sparkles className="w-3.5 h-3.5 fill-black" />
+                  <span>Book Test Drive</span>
+                </button>
+              </div>
+
+            </div>
+          </div>
+
         </div>
 
       </div>
-    </section>
+    </div>
   );
 };
